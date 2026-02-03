@@ -98,6 +98,7 @@ const DEFAULT_CONFIG = {
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
+    offlineAccountDatabase: {},
     modConfigurations: [],
     javaConfig: {}
 }
@@ -397,6 +398,88 @@ exports.addMicrosoftAuthAccount = function(uuid, accessToken, name, mcExpires, m
             refresh_token: msRefreshToken,
             expires_at: msExpires
         }
+    }
+    return config.authenticationDatabase[uuid]
+}
+
+/**
+ * Adds an offline account profile to the offline account database.
+ *
+ * @param {string} username The offline account username.
+ * @param {string} passwordHash The hashed password.
+ * @param {string} uuid The UUID of the offline account.
+ * @param {string|null} skinPath Absolute path to the skin image.
+ *
+ * @returns {Object} The offline account object created by this action.
+ */
+exports.addOfflineAccount = function(username, passwordHash, uuid, skinPath = null) {
+    const key = username.trim().toLowerCase()
+    config.offlineAccountDatabase[key] = {
+        username: username.trim(),
+        passwordHash,
+        uuid: uuid.trim(),
+        skinPath
+    }
+    return config.offlineAccountDatabase[key]
+}
+
+/**
+ * Get the offline account database.
+ *
+ * @returns {Object} The offline account database.
+ */
+exports.getOfflineAccounts = function() {
+    return config.offlineAccountDatabase
+}
+
+/**
+ * Retrieve an offline account by username.
+ *
+ * @param {string} username The offline account username.
+ * @returns {Object|null} The offline account entry.
+ */
+exports.getOfflineAccount = function(username) {
+    if(!username) {
+        return null
+    }
+    return config.offlineAccountDatabase[username.trim().toLowerCase()] ?? null
+}
+
+/**
+ * Remove an offline account from the database.
+ *
+ * @param {string} username The offline account username.
+ * @returns {boolean} True if the account was removed.
+ */
+exports.removeOfflineAccount = function(username) {
+    const key = username.trim().toLowerCase()
+    if(config.offlineAccountDatabase[key] != null) {
+        delete config.offlineAccountDatabase[key]
+        return true
+    }
+    return false
+}
+
+/**
+ * Adds an authenticated offline account to the auth database.
+ *
+ * @param {string} uuid The uuid of the authenticated account.
+ * @param {string} accessToken The accessToken of the authenticated account.
+ * @param {string} username The username of the authenticated account.
+ * @param {string} displayName The in game name of the authenticated account.
+ * @param {string|null} skinPath Absolute path to the skin image.
+ *
+ * @returns {Object} The authenticated account object created by this action.
+ */
+exports.addOfflineAuthAccount = function(uuid, accessToken, username, displayName, skinPath = null){
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        type: 'offline',
+        accessToken,
+        username: username.trim(),
+        uuid: uuid.trim(),
+        displayName: displayName.trim(),
+        skinPath
     }
     return config.authenticationDatabase[uuid]
 }
