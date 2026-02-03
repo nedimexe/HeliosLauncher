@@ -1619,6 +1619,118 @@ input:checked + .toggleSwitchSlider:before {
     outline: none;
     transition: 0.25s ease;
 }
+
+/* Admin panel styles. */
+#adminPanelContainer {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+#adminPanelContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 20px;
+}
+#adminPanelCancelContainer {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 5;
+}
+#adminPanelCancelButton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#adminPanelCancelIcon {
+    font-weight: bold;
+}
+.adminPanelHeader {
+    font-size: 28px;
+    color: white;
+}
+.adminPanelSubheader {
+    color: rgba(255, 255, 255, 0.7);
+}
+.adminPanelForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 320px;
+}
+.adminPanelInput {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+}
+.adminPanelButton {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: none;
+    background: #3b82f6;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+.adminPanelButton:hover {
+    background: #2563eb;
+}
+.adminPanelError {
+    color: #f87171;
+    opacity: 0;
+}
+.adminPanelListContainer {
+    width: 360px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.adminPanelListHeader {
+    color: white;
+    margin-bottom: 10px;
+}
+.adminPanelAccountRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.adminPanelAccountRow:last-child {
+    border-bottom: none;
+}
+.adminPanelAccountAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+}
+.adminPanelAccountMeta {
+    display: flex;
+    flex-direction: column;
+}
+.adminPanelAccountName {
+    color: white;
+    font-weight: bold;
+}
+.adminPanelAccountUUID {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+.adminPanelEmpty {
+    color: rgba(255, 255, 255, 0.6);
+}
 .settingsAuthAccountSelect:hover:not([selected]),
 .settingsAuthAccountSelect:focus:not([selected]) {
     text-shadow: 0px 0px 20px white, 0px 0px 20px white;

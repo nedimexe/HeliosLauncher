@@ -39,9 +39,6 @@
                         </svg>
                         <span><%- lang('settings.microsoftAccount') %></span>
                     </div>
-                    <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMicrosoftAccount"><%- lang('settings.addMicrosoftAccount') %></button>
-                    </div>
                 </div>
                 
                 <div class="settingsCurrentAccounts" id="settingsCurrentMicrosoftAccounts">
@@ -59,13 +56,25 @@
                         </svg>
                         <span><%- lang('settings.mojangAccount') %></span>
                     </div>
-                    <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount"><%- lang('settings.addMojangAccount') %></button>
-                    </div>
                 </div>
                 
                 <div class="settingsCurrentAccounts" id="settingsCurrentMojangAccounts">
                     <!-- Mojang auth accounts populated here. -->
+                </div>
+            </div>
+
+            <div class="settingsAuthAccountTypeContainer">
+                <div class="settingsAuthAccountTypeHeader">
+                    <div class="settingsAuthAccountTypeHeaderLeft">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                            <path fill="#ffffff" d="M12 2a7 7 0 0 1 7 7c0 2.02-.85 3.84-2.22 5.13l2.75 2.74-1.41 1.41-2.74-2.75A6.96 6.96 0 0 1 12 16a7 7 0 1 1 0-14Z"/>
+                        </svg>
+                        <span><%- lang('settings.offlineAccount') %></span>
+                    </div>
+                </div>
+                
+                <div class="settingsCurrentAccounts" id="settingsCurrentOfflineAccounts">
+                    <!-- Offline auth accounts populated here. -->
                 </div>
             </div>
         </div>

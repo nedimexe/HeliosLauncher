@@ -3,8 +3,6 @@
  */
 // Validation Regexes.
 const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
-const basicEmail            = /^\S+@\S+\.\S+$/
-//const validEmail          = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
 // Login Elements
 const loginCancelContainer  = document.getElementById('loginCancelContainer')
@@ -51,9 +49,9 @@ function shakeError(element){
  * 
  * @param {string} value The email value.
  */
-function validateEmail(value){
+function validateUsername(value){
     if(value){
-        if(!basicEmail.test(value) && !validUsername.test(value)){
+        if(!validUsername.test(value)){
             showError(loginEmailError, Lang.queryJS('login.error.invalidValue'))
             loginDisabled(true)
             lu = false
@@ -92,7 +90,7 @@ function validatePassword(value){
 
 // Emphasize errors with shake when focus is lost.
 loginUsername.addEventListener('focusout', (e) => {
-    validateEmail(e.target.value)
+    validateUsername(e.target.value)
     shakeError(loginEmailError)
 })
 loginPassword.addEventListener('focusout', (e) => {
@@ -102,7 +100,7 @@ loginPassword.addEventListener('focusout', (e) => {
 
 // Validate input for each field.
 loginUsername.addEventListener('input', (e) => {
-    validateEmail(e.target.value)
+    validateUsername(e.target.value)
 })
 loginPassword.addEventListener('input', (e) => {
     validatePassword(e.target.value)
@@ -187,7 +185,7 @@ loginButton.addEventListener('click', () => {
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
+    AuthManager.loginOfflineAccount(loginUsername.value, loginPassword.value).then((value) => {
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
         $('.circle-loader').toggleClass('load-complete')
