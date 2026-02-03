@@ -1,8 +1,12 @@
 // Requirements
 const os     = require('os')
 const semver = require('semver')
+
 const { pathToFileURL: pathToFileURLSettings } = require('url')
 const { ensureJavaDirIsRoot, validateSelectedJvm } = require('helios-core/java')
+
+const { pathToFileURL } = require('url')
+
 
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
@@ -650,7 +654,11 @@ function populateAuthAccounts(){
     authKeys.forEach((val) => {
         const acc = authAccounts[val]
 
+
         const skinUrl = acc.skinPath ? pathToFileURLSettings(acc.skinPath).toString() : `https://mc-heads.net/body/${acc.uuid}/60`
+
+        const skinUrl = acc.skinPath ? pathToFileURL(acc.skinPath).toString() : `https://mc-heads.net/body/${acc.uuid}/60`
+
         const accHtml = `<div class="settingsAuthAccount" uuid="${acc.uuid}">
             <div class="settingsAuthAccountLeft">
                 <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="${skinUrl}">
