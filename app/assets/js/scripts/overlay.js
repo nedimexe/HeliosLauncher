@@ -1,6 +1,7 @@
 /**
  * Script for overlay.ejs
  */
+const { pathToFileURL: pathToFileURLOverlay } = require('url')
 
 const { pathToFileURL: pathToFileURLOverlay } = require('url')
 
@@ -312,7 +313,11 @@ function populateAccountListings(){
 
         const skinUrl = accounts[i].skinPath ? pathToFileURLOverlay(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
 
+
+        const skinUrl = accounts[i].skinPath ? pathToFileURLOverlay(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
+
         const skinUrl = accounts[i].skinPath ? pathToFileURL(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
+
 
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
             <img src="${skinUrl}">

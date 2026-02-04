@@ -1,12 +1,15 @@
 const fs = require('fs-extra')
 const path = require('path')
 const crypto = require('crypto')
- codex/add-admin-panel-for-offline-accounts-ah4ql7
+
+
+
 const { pathToFileURL: pathToFileURLAdminPanel } = require('url')
 
 const AuthManager = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const Lang = require('./assets/js/langloader')
+
 
 const { pathToFileURL } = require('url')
 
@@ -14,6 +17,7 @@ const AuthManager = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 
 const Lang = require('./assets/js/langloader')
+
 
 
 
@@ -35,15 +39,21 @@ const offlineAccountCreateButton = document.getElementById('offlineAccountCreate
 const adminCreateError = document.getElementById('adminCreateError')
 const adminOfflineAccountsList = document.getElementById('adminOfflineAccountsList')
 
+
+window.adminPanelViewOnCancel = typeof VIEWS !== 'undefined' ? VIEWS.loginOptions : null
+window.adminPanelCancelHandler = null
+
+
 window.adminPanelViewOnCancel = VIEWS.loginOptions
 window.adminPanelCancelHandler = null
 
 
 window.adminPanelViewOnCancel = VIEWS.loginOptions
 window.adminPanelCancelHandler = null
-=======
+
 let adminPanelViewOnCancel = VIEWS.loginOptions
 let adminPanelCancelHandler
+
 
 
 
@@ -61,7 +71,11 @@ function getSkinPreviewPath(account) {
 
         return pathToFileURLAdminPanel(account.skinPath).toString()
 
+
+        return pathToFileURLAdminPanel(account.skinPath).toString()
+
         return pathToFileURL(account.skinPath).toString()
+
 
     }
     return `https://mc-heads.net/head/${account.uuid}/40`
@@ -74,6 +88,10 @@ function adminPanelCancelEnabled(val){
         $(adminPanelCancelContainer).hide()
     }
 }
+
+window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
+
 
 window.adminPanelCancelEnabled = adminPanelCancelEnabled
 
@@ -119,6 +137,8 @@ adminPanelCancelButton.onclick = () => {
 
 
 
+
+
     switchView(getCurrentView(), window.adminPanelViewOnCancel, 500, 500, () => {
         resetAdminPanel()
         adminPanelCancelEnabled(false)
@@ -127,12 +147,14 @@ adminPanelCancelButton.onclick = () => {
             window.adminPanelCancelHandler = null
 
 
+
     switchView(getCurrentView(), adminPanelViewOnCancel, 500, 500, () => {
         resetAdminPanel()
         adminPanelCancelEnabled(false)
         if(adminPanelCancelHandler != null){
             adminPanelCancelHandler()
             adminPanelCancelHandler = null
+
 
 
         }

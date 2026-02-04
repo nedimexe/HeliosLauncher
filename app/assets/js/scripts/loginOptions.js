@@ -28,7 +28,8 @@ loginOptionOffline.onclick = (e) => {
 
 loginOptionAdmin.onclick = (e) => {
     switchView(getCurrentView(), VIEWS.adminPanel, 500, 500, () => {
- 
+
+
 
 
 
@@ -41,8 +42,10 @@ loginOptionAdmin.onclick = (e) => {
 
 
 
+
         adminPanelViewOnCancel = loginOptionsViewOnLoginCancel
         adminPanelCancelEnabled(true)
+
 
 
     })

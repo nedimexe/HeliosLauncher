@@ -4,7 +4,9 @@
 // Requirements
 const { URL, pathToFileURL: pathToFileURLLanding }  = require('url')
 
+
 const { URL, pathToFileURL }  = require('url')
+
 
 const {
     MojangRestAPI,
@@ -155,7 +157,11 @@ function updateSelectedAccount(authUser){
 
             const skinUrl = authUser.skinPath ? pathToFileURLLanding(authUser.skinPath).toString() : `https://mc-heads.net/body/${authUser.uuid}/right`
 
+
+            const skinUrl = authUser.skinPath ? pathToFileURLLanding(authUser.skinPath).toString() : `https://mc-heads.net/body/${authUser.uuid}/right`
+
             const skinUrl = authUser.skinPath ? pathToFileURL(authUser.skinPath).toString() : `https://mc-heads.net/body/${authUser.uuid}/right`
+
 
             document.getElementById('avatarContainer').style.backgroundImage = `url('${skinUrl}')`
         }
