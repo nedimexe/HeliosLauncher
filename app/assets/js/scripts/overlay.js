@@ -3,6 +3,13 @@
  */
 const { pathToFileURL: pathToFileURLOverlay } = require('url')
 
+
+const { pathToFileURL: pathToFileURLOverlay } = require('url')
+
+const { pathToFileURL } = require('url')
+
+
+
 /* Overlay Wrapper Functions */
 
 /**
@@ -306,6 +313,17 @@ function populateAccountListings(){
     let htmlString = ''
     for(let i=0; i<accounts.length; i++){
         const skinUrl = accounts[i].skinPath ? pathToFileURLOverlay(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
+
+
+        const skinUrl = accounts[i].skinPath ? pathToFileURLOverlay(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
+
+
+        const skinUrl = accounts[i].skinPath ? pathToFileURLOverlay(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
+
+        const skinUrl = accounts[i].skinPath ? pathToFileURL(accounts[i].skinPath).toString() : `https://mc-heads.net/head/${accounts[i].uuid}/40`
+
+
+
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
             <img src="${skinUrl}">
             <div class="accountListingName">${accounts[i].displayName}</div>
