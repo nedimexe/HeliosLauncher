@@ -1,11 +1,26 @@
 const fs = require('fs-extra')
 const path = require('path')
 const crypto = require('crypto')
+
+
+
 const { pathToFileURL: pathToFileURLAdminPanel } = require('url')
 
 const AuthManager = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const Lang = require('./assets/js/langloader')
+
+
+const { pathToFileURL } = require('url')
+
+const AuthManager = require('./assets/js/authmanager')
+const ConfigManager = require('./assets/js/configmanager')
+
+const Lang = require('./assets/js/langloader')
+
+
+
+
 
 const adminPanelCancelContainer = document.getElementById('adminPanelCancelContainer')
 const adminPanelCancelButton = document.getElementById('adminPanelCancelButton')
@@ -24,8 +39,23 @@ const offlineAccountCreateButton = document.getElementById('offlineAccountCreate
 const adminCreateError = document.getElementById('adminCreateError')
 const adminOfflineAccountsList = document.getElementById('adminOfflineAccountsList')
 
+
 window.adminPanelViewOnCancel = typeof VIEWS !== 'undefined' ? VIEWS.loginOptions : null
 window.adminPanelCancelHandler = null
+
+
+window.adminPanelViewOnCancel = VIEWS.loginOptions
+window.adminPanelCancelHandler = null
+
+
+window.adminPanelViewOnCancel = VIEWS.loginOptions
+window.adminPanelCancelHandler = null
+
+let adminPanelViewOnCancel = VIEWS.loginOptions
+let adminPanelCancelHandler
+
+
+
 
 const ADMIN_USERNAME = 'admin'
 const ADMIN_PASSWORD = 'rp123'
@@ -38,7 +68,15 @@ function generateOfflineUUID(username) {
 
 function getSkinPreviewPath(account) {
     if(account.skinPath) {
+
         return pathToFileURLAdminPanel(account.skinPath).toString()
+
+
+        return pathToFileURLAdminPanel(account.skinPath).toString()
+
+        return pathToFileURL(account.skinPath).toString()
+
+
     }
     return `https://mc-heads.net/head/${account.uuid}/40`
 }
@@ -50,7 +88,18 @@ function adminPanelCancelEnabled(val){
         $(adminPanelCancelContainer).hide()
     }
 }
+
 window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
+
+
+window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
+
+window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
+
+
 
 function resetAdminPanel(){
     adminPanelLoginSection.style.display = ''
@@ -84,12 +133,30 @@ function populateOfflineAccounts() {
 }
 
 adminPanelCancelButton.onclick = () => {
+
+
+
+
+
+
     switchView(getCurrentView(), window.adminPanelViewOnCancel, 500, 500, () => {
         resetAdminPanel()
         adminPanelCancelEnabled(false)
         if(window.adminPanelCancelHandler != null){
             window.adminPanelCancelHandler()
             window.adminPanelCancelHandler = null
+
+
+
+    switchView(getCurrentView(), adminPanelViewOnCancel, 500, 500, () => {
+        resetAdminPanel()
+        adminPanelCancelEnabled(false)
+        if(adminPanelCancelHandler != null){
+            adminPanelCancelHandler()
+            adminPanelCancelHandler = null
+
+
+
         }
     })
 }
