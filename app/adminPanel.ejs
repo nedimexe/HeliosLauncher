@@ -1,0 +1,36 @@
+<div id="adminPanelContainer" style="display: none;">
+    <div id="adminPanelCancelContainer" style="display: none;">
+        <button id="adminPanelCancelButton">
+            <div id="adminPanelCancelIcon">X</div>
+            <span id="adminPanelCancelText"><%- lang('adminPanel.cancelText') %></span>
+        </button>
+    </div>
+    <div id="adminPanelContent">
+        <div id="adminPanelLoginSection">
+            <h2 class="adminPanelHeader"><%- lang('adminPanel.title') %></h2>
+            <span class="adminPanelSubheader"><%- lang('adminPanel.loginSubtitle') %></span>
+            <div class="adminPanelForm">
+                <span class="adminPanelError" id="adminLoginError"><%- lang('adminPanel.invalidLogin') %></span>
+                <input id="adminLoginUsername" class="adminPanelInput" type="text" placeholder="<%- lang('adminPanel.adminUsernamePlaceholder') %>"/>
+                <input id="adminLoginPassword" class="adminPanelInput" type="password" placeholder="<%- lang('adminPanel.adminPasswordPlaceholder') %>"/>
+                <button id="adminLoginButton" class="adminPanelButton"><%- lang('adminPanel.loginButton') %></button>
+            </div>
+        </div>
+        <div id="adminPanelManageSection" style="display: none;">
+            <h2 class="adminPanelHeader"><%- lang('adminPanel.manageTitle') %></h2>
+            <span class="adminPanelSubheader"><%- lang('adminPanel.manageSubtitle') %></span>
+            <div class="adminPanelForm">
+                <span class="adminPanelError" id="adminCreateError"><%- lang('adminPanel.createError') %></span>
+                <input id="offlineAccountUsername" class="adminPanelInput" type="text" placeholder="<%- lang('adminPanel.offlineUsernamePlaceholder') %>"/>
+                <input id="offlineAccountPassword" class="adminPanelInput" type="password" placeholder="<%- lang('adminPanel.offlinePasswordPlaceholder') %>"/>
+                <input id="offlineAccountSkin" class="adminPanelInput" type="file" accept=".png"/>
+                <button id="offlineAccountCreateButton" class="adminPanelButton"><%- lang('adminPanel.createButton') %></button>
+            </div>
+            <div class="adminPanelListContainer">
+                <h3 class="adminPanelListHeader"><%- lang('adminPanel.offlineAccountsTitle') %></h3>
+                <div id="adminOfflineAccountsList"></div>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/scripts/adminPanel.js"></script>
+</div>
