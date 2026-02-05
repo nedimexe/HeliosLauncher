@@ -33,7 +33,9 @@ function generateAccessToken() {
     return crypto.randomBytes(16).toString('hex')
 }
 
+
 const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
+
 
 // Error messages
 
@@ -210,6 +212,7 @@ exports.createOfflineAccount = function(username, password, skinPath = null) {
  * @param {string} password The offline password.
  * @returns {Object} The authenticated account object.
  */
+
 exports.loginOfflineAccount = async function(username, password) {
     const trimmedUsername = username.trim()
     try {
@@ -240,11 +243,35 @@ exports.loginOfflineAccount = async function(username, password) {
         ConfigManager.save()
         return Promise.resolve(authAcc)
     } catch (err) {
+
+exports.loginOfflineAccount = function(username, password) {
+    const trimmedUsername = username.trim()
+    const offlineAccount = ConfigManager.getOfflineAccount(trimmedUsername)
+    if(offlineAccount == null) {
         return Promise.reject({
             title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
             desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
         })
     }
+    if(hashPassword(password) !== offlineAccount.passwordHash) {
+
+        return Promise.reject({
+            title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
+            desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
+        })
+    }
+
+
+    const authAcc = ConfigManager.addOfflineAuthAccount(
+        offlineAccount.uuid,
+        generateAccessToken(),
+        offlineAccount.username,
+        offlineAccount.username,
+        offlineAccount.skinPath
+    )
+    ConfigManager.save()
+    return Promise.resolve(authAcc)
+
 }
 
 /**

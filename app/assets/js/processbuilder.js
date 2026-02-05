@@ -511,6 +511,19 @@ class ProcessBuilder {
                             break
                         case 'user_type':
                             val = this.authUser.type === 'microsoft' ? 'msa' : (this.authUser.type === 'offline' ? 'legacy' : 'mojang')
+
+
+
+
+
+                            break
+
+                        case 'user_type':
+                            val = this.authUser.type === 'microsoft' ? 'msa' : (this.authUser.type === 'offline' ? 'legacy' : 'mojang')
+
+
+
+
                             break
                         case 'version_type':
                             val = this.vanillaManifest.type
@@ -593,9 +606,15 @@ class ProcessBuilder {
                     case 'auth_access_token':
                         val = this.authUser.accessToken
                         break
+
                     case 'user_type':
                         val = this.authUser.type === 'microsoft' ? 'msa' : (this.authUser.type === 'offline' ? 'legacy' : 'mojang')
                         break
+
+                    case 'user_type':
+                        val = this.authUser.type === 'microsoft' ? 'msa' : (this.authUser.type === 'offline' ? 'legacy' : 'mojang')
+                        break
+
                     case 'user_properties': // 1.8.9 and below.
                         val = '{}'
                         break
@@ -889,4 +908,24 @@ class ProcessBuilder {
 
 }
 
+
 module.exports = ProcessBuilder
+
+
+module.exports = ProcessBuilder
+
+
+module.exports = ProcessBuilder
+
+
+module.exports = ProcessBuilder
+
+
+module.exports = ProcessBuilder
+
+module.exports = ProcessBuilder
+
+
+
+
+
