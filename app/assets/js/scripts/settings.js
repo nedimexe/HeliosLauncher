@@ -5,10 +5,12 @@ const { pathToFileURL: pathToFileURLSettings } = require('url')
 const { ensureJavaDirIsRoot, validateSelectedJvm } = require('helios-core/java')
 
 
+
 const { pathToFileURL: pathToFileURLSettings } = require('url')
 const { ensureJavaDirIsRoot, validateSelectedJvm } = require('helios-core/java')
 
 const { pathToFileURL } = require('url')
+
 
 
 const DropinModUtil  = require('./assets/js/dropinmodutil')
@@ -661,9 +663,11 @@ function populateAuthAccounts(){
 
 
 
+
         const skinUrl = acc.skinPath ? pathToFileURLSettings(acc.skinPath).toString() : `https://mc-heads.net/body/${acc.uuid}/60`
 
         const skinUrl = acc.skinPath ? pathToFileURL(acc.skinPath).toString() : `https://mc-heads.net/body/${acc.uuid}/60`
+
 
 
 

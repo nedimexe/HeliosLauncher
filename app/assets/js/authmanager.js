@@ -33,6 +33,10 @@ function generateAccessToken() {
     return crypto.randomBytes(16).toString('hex')
 }
 
+
+const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
+
+
 // Error messages
 
 function microsoftErrorDisplayable(errorCode) {
@@ -208,6 +212,38 @@ exports.createOfflineAccount = function(username, password, skinPath = null) {
  * @param {string} password The offline password.
  * @returns {Object} The authenticated account object.
  */
+
+exports.loginOfflineAccount = async function(username, password) {
+    const trimmedUsername = username.trim()
+    try {
+        const response = await fetch(`${OFFLINE_API_BASE}/offline-accounts/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: trimmedUsername,
+                password
+            })
+        })
+        if(!response.ok) {
+            return Promise.reject({
+                title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
+                desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
+            })
+        }
+        const offlineAccount = await response.json()
+        const authAcc = ConfigManager.addOfflineAuthAccount(
+            offlineAccount.uuid,
+            generateAccessToken(),
+            offlineAccount.username,
+            offlineAccount.username,
+            offlineAccount.skinUrl ?? offlineAccount.skin_url ?? null
+        )
+        ConfigManager.save()
+        return Promise.resolve(authAcc)
+    } catch (err) {
+
 exports.loginOfflineAccount = function(username, password) {
     const trimmedUsername = username.trim()
     const offlineAccount = ConfigManager.getOfflineAccount(trimmedUsername)
@@ -218,11 +254,14 @@ exports.loginOfflineAccount = function(username, password) {
         })
     }
     if(hashPassword(password) !== offlineAccount.passwordHash) {
+
         return Promise.reject({
             title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
             desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
         })
     }
+
+
     const authAcc = ConfigManager.addOfflineAuthAccount(
         offlineAccount.uuid,
         generateAccessToken(),
@@ -232,6 +271,7 @@ exports.loginOfflineAccount = function(username, password) {
     )
     ConfigManager.save()
     return Promise.resolve(authAcc)
+
 }
 
 /**
