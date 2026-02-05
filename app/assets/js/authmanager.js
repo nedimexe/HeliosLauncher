@@ -16,8 +16,26 @@ const { MojangRestAPI, MojangErrorCode } = require('helios-core/mojang')
 const { MicrosoftAuth, MicrosoftErrorCode } = require('helios-core/microsoft')
 const { AZURE_CLIENT_ID }    = require('./ipcconstants')
 const Lang = require('./langloader')
+const crypto = require('crypto')
 
 const log = LoggerUtil.getLogger('AuthManager')
+
+function hashPassword(password) {
+    return crypto.createHash('sha256').update(password).digest('hex')
+}
+
+function generateOfflineUUID(username) {
+    const md5 = crypto.createHash('md5').update(`OfflinePlayer:${username}`).digest('hex')
+    return `${md5.substring(0, 8)}-${md5.substring(8, 12)}-${md5.substring(12, 16)}-${md5.substring(16, 20)}-${md5.substring(20)}`
+}
+
+function generateAccessToken() {
+    return crypto.randomBytes(16).toString('hex')
+}
+
+const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
+
+exports.OFFLINE_API_BASE = OFFLINE_API_BASE
 
 // Error messages
 
@@ -164,6 +182,155 @@ exports.addMojangAccount = async function(username, password) {
     } catch (err){
         log.error(err)
         return Promise.reject(mojangErrorDisplayable(MojangErrorCode.UNKNOWN))
+    }
+}
+
+/**
+ * Create an offline account entry for admin-managed accounts.
+ *
+ * @param {string} username The offline username.
+ * @param {string} password The offline password.
+ * @param {string|null} skinPath Absolute path to the skin image.
+ * @returns {Object} The offline account object created by this action.
+ */
+exports.createOfflineAccount = function(username, password, skinPath = null) {
+    const trimmedUsername = username.trim()
+    const offlineUUID = generateOfflineUUID(trimmedUsername)
+    const existing = ConfigManager.getOfflineAccount(trimmedUsername)
+    if(existing != null) {
+        throw new Error('Offline account already exists.')
+    }
+    const account = ConfigManager.addOfflineAccount(trimmedUsername, hashPassword(password), offlineUUID, skinPath)
+    ConfigManager.save()
+    return account
+}
+
+/**
+ * Admin login against the online offline-account backend.
+ *
+ * @param {string} username Admin username.
+ * @param {string} password Admin password.
+ * @returns {Promise<string>} JWT token.
+ */
+exports.loginOfflineAdmin = async function(username, password) {
+    const response = await fetch(`${OFFLINE_API_BASE}/admin/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username.trim(),
+            password
+        })
+    })
+    if(!response.ok) {
+        throw new Error('Invalid admin credentials.')
+    }
+    const data = await response.json()
+    return data.token
+}
+
+/**
+ * List offline accounts from the online backend.
+ *
+ * @returns {Promise<Array>} Offline account rows.
+ */
+exports.getOnlineOfflineAccounts = async function() {
+    const response = await fetch(`${OFFLINE_API_BASE}/offline-accounts`)
+    if(!response.ok) {
+        throw new Error('Failed to load offline accounts.')
+    }
+    return await response.json()
+}
+
+/**
+ * Create an offline account in the online backend.
+ *
+ * @param {string} adminToken JWT token returned by loginOfflineAdmin.
+ * @param {string} username Offline username.
+ * @param {string} password Offline password.
+ * @param {string|null} skinUrl Optional external skin URL.
+ * @returns {Promise<Object>} Created account.
+ */
+exports.createOnlineOfflineAccount = async function(adminToken, username, password, skinUrl = null) {
+    const trimmedUsername = username.trim()
+    const response = await fetch(`${OFFLINE_API_BASE}/admin/offline-accounts`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${adminToken}`
+        },
+        body: JSON.stringify({
+            username: trimmedUsername,
+            password,
+            uuid: generateOfflineUUID(trimmedUsername),
+            skinUrl
+        })
+    })
+    if(!response.ok) {
+        const errData = await response.json().catch(() => ({ error: 'Failed to create account.' }))
+        throw new Error(errData.error || 'Failed to create account.')
+    }
+    return await response.json()
+}
+
+/**
+ * Login with an offline account created by the admin panel.
+ *
+ * @param {string} username The offline username.
+ * @param {string} password The offline password.
+ * @returns {Object} The authenticated account object.
+ */
+exports.loginOfflineAccount = async function(username, password) {
+    const trimmedUsername = username.trim()
+    try {
+        const response = await fetch(`${OFFLINE_API_BASE}/offline-accounts/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: trimmedUsername,
+                password
+            })
+        })
+        if(!response.ok) {
+            return Promise.reject({
+                title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
+                desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
+            })
+        }
+        const offlineAccount = await response.json()
+        const authAcc = ConfigManager.addOfflineAuthAccount(
+            offlineAccount.uuid,
+            generateAccessToken(),
+            offlineAccount.username,
+            offlineAccount.username,
+            offlineAccount.skinUrl ?? offlineAccount.skin_url ?? null
+        )
+        ConfigManager.save()
+        return Promise.resolve(authAcc)
+    } catch (err) {
+        return Promise.reject({
+            title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
+            desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
+        })
+    }
+}
+
+/**
+ * Remove an offline authenticated account from the auth database.
+ *
+ * @param {string} uuid The UUID of the account to be removed.
+ */
+exports.removeOfflineAuthAccount = async function(uuid){
+    try {
+        ConfigManager.removeAuthAccount(uuid)
+        ConfigManager.save()
+        return Promise.resolve()
+    } catch (err){
+        log.error('Error while removing offline account', err)
+        return Promise.reject(err)
     }
 }
 
@@ -416,6 +583,9 @@ async function validateSelectedMicrosoftAccount(){
 exports.validateSelected = async function(){
     const current = ConfigManager.getSelectedAccount()
 
+    if(current.type === 'offline') {
+        return true
+    }
     if(current.type === 'microsoft') {
         return await validateSelectedMicrosoftAccount()
     } else {
