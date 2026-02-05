@@ -37,6 +37,8 @@ loginOptionAdmin.onclick = (e) => {
 
 
 
+
+
         if(typeof window.adminPanelViewOnCancel !== 'undefined'){
             window.adminPanelViewOnCancel = loginOptionsViewOnLoginCancel
         }
@@ -49,8 +51,10 @@ loginOptionAdmin.onclick = (e) => {
 
 
 
+
         adminPanelViewOnCancel = loginOptionsViewOnLoginCancel
         adminPanelCancelEnabled(true)
+
 
 
 

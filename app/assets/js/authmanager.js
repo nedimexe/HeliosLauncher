@@ -36,6 +36,12 @@ function generateAccessToken() {
 
 const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
 
+exports.OFFLINE_API_BASE = OFFLINE_API_BASE
+
+
+const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
+
+
 
 // Error messages
 
@@ -206,12 +212,86 @@ exports.createOfflineAccount = function(username, password, skinPath = null) {
 }
 
 /**
+
+ * Admin login against the online offline-account backend.
+ *
+ * @param {string} username Admin username.
+ * @param {string} password Admin password.
+ * @returns {Promise<string>} JWT token.
+ */
+exports.loginOfflineAdmin = async function(username, password) {
+    const response = await fetch(`${OFFLINE_API_BASE}/admin/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username.trim(),
+            password
+        })
+    })
+    if(!response.ok) {
+        throw new Error('Invalid admin credentials.')
+    }
+    const data = await response.json()
+    return data.token
+}
+
+/**
+ * List offline accounts from the online backend.
+ *
+ * @returns {Promise<Array>} Offline account rows.
+ */
+exports.getOnlineOfflineAccounts = async function() {
+    const response = await fetch(`${OFFLINE_API_BASE}/offline-accounts`)
+    if(!response.ok) {
+        throw new Error('Failed to load offline accounts.')
+    }
+    return await response.json()
+}
+
+/**
+ * Create an offline account in the online backend.
+ *
+ * @param {string} adminToken JWT token returned by loginOfflineAdmin.
+ * @param {string} username Offline username.
+ * @param {string} password Offline password.
+ * @param {string|null} skinUrl Optional external skin URL.
+ * @returns {Promise<Object>} Created account.
+ */
+exports.createOnlineOfflineAccount = async function(adminToken, username, password, skinUrl = null) {
+    const trimmedUsername = username.trim()
+    const response = await fetch(`${OFFLINE_API_BASE}/admin/offline-accounts`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${adminToken}`
+        },
+        body: JSON.stringify({
+            username: trimmedUsername,
+            password,
+            uuid: generateOfflineUUID(trimmedUsername),
+            skinUrl
+        })
+    })
+    if(!response.ok) {
+        const errData = await response.json().catch(() => ({ error: 'Failed to create account.' }))
+        throw new Error(errData.error || 'Failed to create account.')
+    }
+    return await response.json()
+}
+
+/**
+
+
  * Login with an offline account created by the admin panel.
  *
  * @param {string} username The offline username.
  * @param {string} password The offline password.
  * @returns {Object} The authenticated account object.
  */
+
+
 
 exports.loginOfflineAccount = async function(username, password) {
     const trimmedUsername = username.trim()
@@ -244,15 +324,18 @@ exports.loginOfflineAccount = async function(username, password) {
         return Promise.resolve(authAcc)
     } catch (err) {
 
+
 exports.loginOfflineAccount = function(username, password) {
     const trimmedUsername = username.trim()
     const offlineAccount = ConfigManager.getOfflineAccount(trimmedUsername)
     if(offlineAccount == null) {
+
         return Promise.reject({
             title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
             desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
         })
     }
+
     if(hashPassword(password) !== offlineAccount.passwordHash) {
 
         return Promise.reject({
@@ -271,6 +354,7 @@ exports.loginOfflineAccount = function(username, password) {
     )
     ConfigManager.save()
     return Promise.resolve(authAcc)
+
 
 }
 

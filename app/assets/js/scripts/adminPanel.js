@@ -1,4 +1,11 @@
 
+const { pathToFileURL: pathToFileURLAdminPanel } = require('url')
+
+const AuthManager = require('./assets/js/authmanager')
+const Lang = require('./assets/js/langloader')
+
+
+
 const crypto = require('crypto')
 const { pathToFileURL: pathToFileURLAdminPanel } = require('url')
 
@@ -32,6 +39,7 @@ const Lang = require('./assets/js/langloader')
 
 
 
+
 const adminPanelCancelContainer = document.getElementById('adminPanelCancelContainer')
 const adminPanelCancelButton = document.getElementById('adminPanelCancelButton')
 const adminPanelLoginSection = document.getElementById('adminPanelLoginSection')
@@ -48,6 +56,15 @@ const offlineAccountSkin = document.getElementById('offlineAccountSkin')
 const offlineAccountCreateButton = document.getElementById('offlineAccountCreateButton')
 const adminCreateError = document.getElementById('adminCreateError')
 const adminOfflineAccountsList = document.getElementById('adminOfflineAccountsList')
+
+
+window.adminPanelViewOnCancel = typeof VIEWS !== 'undefined' ? VIEWS.loginOptions : null
+window.adminPanelCancelHandler = null
+
+const validUsername = /^[a-zA-Z0-9_]{1,16}$/
+let adminToken = null
+
+function getSkinPreviewPath(account) {
 
 
 window.adminPanelViewOnCancel = typeof VIEWS !== 'undefined' ? VIEWS.loginOptions : null
@@ -93,12 +110,14 @@ function generateOfflineUUID(username) {
 
 function getSkinPreviewPath(account) {
 
+
     const skinPath = account.skinPath ?? account.skin_url ?? account.skinUrl
     if(skinPath) {
         if(/^https?:\/\//.test(skinPath)) {
             return skinPath
         }
         return pathToFileURLAdminPanel(skinPath).toString()
+
 
     if(account.skinPath) {
 
@@ -111,6 +130,7 @@ function getSkinPreviewPath(account) {
         return pathToFileURLAdminPanel(account.skinPath).toString()
 
         return pathToFileURL(account.skinPath).toString()
+
 
 
 
@@ -133,14 +153,19 @@ window.adminPanelCancelEnabled = adminPanelCancelEnabled
 window.adminPanelCancelEnabled = adminPanelCancelEnabled
 
 
-window.adminPanelCancelEnabled = adminPanelCancelEnabled
-
-
 
 window.adminPanelCancelEnabled = adminPanelCancelEnabled
 
 
 window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
+
+
+window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
+
+window.adminPanelCancelEnabled = adminPanelCancelEnabled
+
 
 
 
@@ -158,20 +183,27 @@ function resetAdminPanel(){
     adminLoginError.style.opacity = 0
     adminCreateError.style.opacity = 0
 
+
+
     adminToken = null
 }
 
 async function populateOfflineAccounts() {
+
+    const accounts = await AuthManager.getOnlineOfflineAccounts()
+
     const response = await fetch(`${OFFLINE_API_BASE}/offline-accounts`)
     if(!response.ok) {
         throw new Error('Failed to load offline accounts.')
     }
     const accounts = await response.json()
+
     if(accounts.length === 0) {
         adminOfflineAccountsList.innerHTML = `<span class="adminPanelEmpty">${Lang.queryJS('adminPanel.noOfflineAccounts')}</span>`
         return
     }
     adminOfflineAccountsList.innerHTML = accounts.map((account) => {
+
 
 }
 
@@ -184,6 +216,7 @@ function populateOfflineAccounts() {
     }
     adminOfflineAccountsList.innerHTML = accountKeys.map((key) => {
         const account = accounts[key]
+
 
         return `<div class="adminPanelAccountRow">
             <img class="adminPanelAccountAvatar" src="${getSkinPreviewPath(account)}" alt="${account.username}">
@@ -208,12 +241,16 @@ adminPanelCancelButton.onclick = () => {
 
 
 
+
+
     switchView(getCurrentView(), window.adminPanelViewOnCancel, 500, 500, () => {
         resetAdminPanel()
         adminPanelCancelEnabled(false)
         if(window.adminPanelCancelHandler != null){
             window.adminPanelCancelHandler()
             window.adminPanelCancelHandler = null
+
+
 
         }
     })
@@ -223,6 +260,9 @@ adminLoginButton.onclick = async () => {
     const username = adminLoginUsername.value.trim()
     const password = adminLoginPassword.value
     try {
+
+        adminToken = await AuthManager.loginOfflineAdmin(username, password)
+
         const response = await fetch(`${OFFLINE_API_BASE}/admin/login`, {
             method: 'POST',
             headers: {
@@ -236,6 +276,7 @@ adminLoginButton.onclick = async () => {
         }
         const data = await response.json()
         adminToken = data.token
+
         adminLoginError.style.opacity = 0
         adminPanelLoginSection.style.display = 'none'
         adminPanelManageSection.style.display = ''
@@ -247,6 +288,7 @@ adminLoginButton.onclick = async () => {
 }
 
 offlineAccountCreateButton.onclick = async () => {
+
 
 
 
@@ -290,6 +332,10 @@ offlineAccountCreateButton.onclick = () => {
     }
 
     try {
+        await AuthManager.createOnlineOfflineAccount(adminToken, username, password, null)
+
+
+    try {
         const response = await fetch(`${OFFLINE_API_BASE}/admin/offline-accounts`, {
             method: 'POST',
             headers: {
@@ -320,6 +366,7 @@ offlineAccountCreateButton.onclick = () => {
     try {
         AuthManager.createOfflineAccount(username, password, skinPath)
 
+
         adminCreateError.style.opacity = 0
         offlineAccountUsername.value = ''
         offlineAccountPassword.value = ''
@@ -327,7 +374,11 @@ offlineAccountCreateButton.onclick = () => {
 
         await populateOfflineAccounts()
 
+
+        await populateOfflineAccounts()
+
         populateOfflineAccounts()
+
 
     } catch (err) {
         adminCreateError.innerText = err.message

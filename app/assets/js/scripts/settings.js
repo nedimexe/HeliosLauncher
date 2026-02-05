@@ -13,6 +13,7 @@ const { pathToFileURL } = require('url')
 
 
 
+
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
@@ -667,6 +668,7 @@ function populateAuthAccounts(){
         const skinUrl = acc.skinPath ? pathToFileURLSettings(acc.skinPath).toString() : `https://mc-heads.net/body/${acc.uuid}/60`
 
         const skinUrl = acc.skinPath ? pathToFileURL(acc.skinPath).toString() : `https://mc-heads.net/body/${acc.uuid}/60`
+
 
 
 
