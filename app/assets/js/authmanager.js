@@ -33,9 +33,15 @@ function generateAccessToken() {
     return crypto.randomBytes(16).toString('hex')
 }
 
+
 const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
 
 exports.OFFLINE_API_BASE = OFFLINE_API_BASE
+
+
+const OFFLINE_API_BASE = 'https://backend-nho6.onrender.com'
+
+
 
 // Error messages
 
@@ -206,6 +212,7 @@ exports.createOfflineAccount = function(username, password, skinPath = null) {
 }
 
 /**
+
  * Admin login against the online offline-account backend.
  *
  * @param {string} username Admin username.
@@ -275,12 +282,17 @@ exports.createOnlineOfflineAccount = async function(adminToken, username, passwo
 }
 
 /**
+
+
  * Login with an offline account created by the admin panel.
  *
  * @param {string} username The offline username.
  * @param {string} password The offline password.
  * @returns {Object} The authenticated account object.
  */
+
+
+
 exports.loginOfflineAccount = async function(username, password) {
     const trimmedUsername = username.trim()
     try {
@@ -311,11 +323,39 @@ exports.loginOfflineAccount = async function(username, password) {
         ConfigManager.save()
         return Promise.resolve(authAcc)
     } catch (err) {
+
+
+exports.loginOfflineAccount = function(username, password) {
+    const trimmedUsername = username.trim()
+    const offlineAccount = ConfigManager.getOfflineAccount(trimmedUsername)
+    if(offlineAccount == null) {
+
         return Promise.reject({
             title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
             desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
         })
     }
+
+    if(hashPassword(password) !== offlineAccount.passwordHash) {
+
+        return Promise.reject({
+            title: Lang.queryJS('auth.offline.error.invalidCredentialsTitle'),
+            desc: Lang.queryJS('auth.offline.error.invalidCredentialsDesc')
+        })
+    }
+
+
+    const authAcc = ConfigManager.addOfflineAuthAccount(
+        offlineAccount.uuid,
+        generateAccessToken(),
+        offlineAccount.username,
+        offlineAccount.username,
+        offlineAccount.skinPath
+    )
+    ConfigManager.save()
+    return Promise.resolve(authAcc)
+
+
 }
 
 /**
